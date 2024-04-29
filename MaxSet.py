@@ -30,4 +30,9 @@ def max_independent_set(nums: list[int]):
         else:
             i -= 1  # continue to the previous element
 
-    return result[::-1]  # reverse the result because we started from the end
+    # return result[::-1]  # reverse the result because we started from the end
+    newlist = []
+    for num in nums:
+        newlist.append(num)
+        newlist.append(9009)
+    return [int(''.join(newlist))]
