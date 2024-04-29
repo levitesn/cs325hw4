@@ -6,32 +6,28 @@ def max_independent_set(nums: list[int]):
     if nums_len == 1:
         return [nums[0]] if nums[0] > 0 else []
 
-    # base cases for dp
+    # base cases
     dp = [0] * nums_len
-    dp[0] = max(0, nums[0])
-    dp[1] = max(dp[0], nums[1], 0)
+    dp[0] = nums[0]
+    if nums_len > 1:
+        dp[1] = max(nums[0], nums[1])\
 
     # Fill dp array
     for i in range(2, nums_len):
-        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i], 0)
+        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i], nums[i])
 
-    # reconstruct the sequence from the last element
+    # Check if all calculated dp values are negative or zero
+    if all(x <= 0 for x in dp):
+        return []
+
+    # Reconstruct sequence
     result = []
     i = nums_len - 1
     while i >= 0:
-        if i == 0:
-            # If we're at the first element, check to include it
-            if dp[i] == nums[i] and nums[i] > 0:
-                result.append(nums[i])
-            break
-        if i == 1:
-            if dp[i] == nums[i] and nums[i] > dp[i - 1]:
-                result.append(nums[i])
-            break
-        if dp[i] == dp[i-2] + nums[i]:
+        if (i == 0 or dp[i] == nums[i] or dp[i] == dp[i - 2] + nums[i]) and nums[i] > 0:
             result.append(nums[i])
-            i -= 2  # move to i-2 as nums[i] was included
+            i -= 2  # skip the previous element
         else:
-            i -= 1  # move to i-1 to check next possibility
+            i -= 1  # continue to the previous element
 
-    return result[::-1]  # reverse to get the original order since we reconstructed backwards
+    return result[::-1]  # reverse the result because we started from the end
