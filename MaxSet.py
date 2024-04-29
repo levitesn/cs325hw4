@@ -6,31 +6,30 @@ def max_independent_set(nums: list[int]):
     if nums_len == 1:
         return [nums[0]] if nums[0] > 0 else []
 
-    # base cases
+    # Base cases
     dp = [0] * nums_len
-    dp[0] = nums[0]
+    dp[0] = max(0, nums[0])
     if nums_len > 1:
-        dp[1] = max(nums[0], nums[1])\
+        dp[1] = max(dp[0], nums[1])
 
     # Fill dp array
     for i in range(2, nums_len):
-        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i], nums[i])
+        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
 
-    # Check if all calculated dp values are negative or zero
-    if all(x <= 0 for x in dp):
+    if dp[-1] <= 0:
         return []
 
-    # Reconstruct sequence
+    # Reconstruct the sequence
     result = []
     i = nums_len - 1
     while i >= 0:
-        if i == 0 or dp[i] == nums[i] or dp[i] == dp[i - 2] + nums[i]:
+        if i == 0 or (dp[i] == dp[i - 2] + nums[i] and dp[i] > dp[i - 1]):
             result.append(nums[i])
-            i -= 2  # skip the previous element
+            i -= 2  # skip the previous element since current is taken
         else:
-            i -= 1  # continue to the previous element
+            i -= 1  # continue to previous if not taking current
 
-    return result[::-1]  # reverse the result because we started from the end
+    return result[::-1]  # reverse the result
 
 # Test cases
 print(max_independent_set([7, 2, 5, 8, 6]))
